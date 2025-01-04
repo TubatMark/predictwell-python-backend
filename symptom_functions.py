@@ -4,34 +4,33 @@ import joblib
 import json
 import os
 import logging
+import warnings
 
-# Configure logging
-# Commented out the file-based logging to avoid issues in read-only environments
-# logging.basicConfig(
-#     filename="diagnosis_debug.log",
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(levelname)s - %(message)s",
-# )
+# Suppress joblib warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="joblib")
 
+# Configure logging to stream logs instead of writing to files
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()],  # Log to console instead of a file
+    handlers=[logging.StreamHandler()],
 )
 
 # Path to the saved RandomForest model
-MODEL_PATH = "random_forest_classifier_disease_model.pkl"
+MODEL_PATH = os.path.join(
+    os.path.dirname(__file__), "random_forest_classifier_disease_model.pkl"
+)
 
 
 def load_symptoms():
     """Load symptoms from a text file into a set."""
     try:
-        # Construct the absolute path to symptoms.txt
         file_path = os.path.join(os.path.dirname(__file__), "symptoms.txt")
         with open(file_path, "r") as f:
             symptoms = {line.strip().lower() for line in f if line.strip()}
         return symptoms
     except FileNotFoundError:
+        logging.error("Symptoms file not found.")
         return set()
 
 
@@ -42,19 +41,15 @@ def load_disease_data():
         logging.info("Disease data loaded successfully.")
         return df
     except FileNotFoundError:
-        logging.error("Disease dataset file not found: disease_dataset.xlsx")
+        logging.error("Disease dataset file not found.")
         return None
 
 
 def load_model():
     """Load the pre-trained model and feature names."""
     try:
-        # Construct the absolute path to the model file
-        model_path = os.path.join(
-            os.path.dirname(__file__), "random_forest_classifier_disease_model.pkl"
-        )
-        logging.info(f"Attempting to load model from: {model_path}")
-        model, feature_names = joblib.load(model_path)
+        logging.info(f"Attempting to load model from: {MODEL_PATH}")
+        model, feature_names = joblib.load(MODEL_PATH)
         logging.info(f"Model loaded successfully. Features: {feature_names}")
         return model, feature_names
     except FileNotFoundError:
@@ -71,7 +66,6 @@ def preprocess_symptoms(user_input):
     if not symptoms_in_file:
         return {"error": "Symptoms file not found or empty."}
 
-    # Normalize user input and match symptoms
     input_symptoms = {
         symptom.strip().replace("_", " ").lower()
         for symptom in user_input.replace(",", " ").split()
@@ -105,10 +99,6 @@ def diagnose_symptoms(matched_symptoms):
 
     try:
         feature_vector_df = create_feature_vector(matched_symptoms, feature_names)
-
-        # Debug the feature vector
-        logging.debug(f"Feature vector for prediction: {feature_vector_df}")
-
         prediction = model.predict(feature_vector_df)[0]
         probabilities = model.predict_proba(feature_vector_df)[0]
         probability = max(probabilities) * 100  # Probability of the predicted class
@@ -124,7 +114,6 @@ if __name__ == "__main__":
     try:
         user_input = sys.argv[1] if len(sys.argv) > 1 else ""
 
-        # Default response structure
         result = {
             "matched_symptoms": [],
             "prognosis": "No input provided.",
@@ -134,7 +123,6 @@ if __name__ == "__main__":
         if not user_input.strip():
             result["error"] = "No symptoms provided."
         else:
-            # Preprocess user input
             preprocessed_result = preprocess_symptoms(user_input)
             if "error" in preprocessed_result:
                 result.update(preprocessed_result)
