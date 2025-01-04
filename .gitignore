@@ -1,2 +1,5 @@
 env
 node_modules
+app.log
+diagnosis_debug.log
+symptom_functions copy.py

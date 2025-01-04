@@ -9,15 +9,16 @@ from symptom_functions import (
 app = Flask(__name__)
 
 # Logging setup
-log_file = "app.log"  # Log file name
-if not os.path.exists(log_file):
-    with open(log_file, "w") as file:  # Create the log file if it doesn't exist
-        file.write("Application Log\n")
+# Commented out to avoid issues in read-only environments
+# log_file = "app.log"  # Log file name
+# if not os.path.exists(log_file):
+#     with open(log_file, "w") as file:  # Create the log file if it doesn't exist
+#         file.write("Application Log\n")
 
 logging.basicConfig(
-    filename=log_file,
     level=logging.DEBUG,  # Set to DEBUG to capture all types of logs
     format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],  # Log to console instead of a file
 )
 
 
@@ -73,4 +74,4 @@ def process_symptoms():
 
 if __name__ == "__main__":
     logging.info("Starting Flask app")
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(debug=False)

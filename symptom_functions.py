@@ -6,10 +6,17 @@ import os
 import logging
 
 # Configure logging
+# Commented out the file-based logging to avoid issues in read-only environments
+# logging.basicConfig(
+#     filename="diagnosis_debug.log",
+#     level=logging.DEBUG,
+#     format="%(asctime)s - %(levelname)s - %(message)s",
+# )
+
 logging.basicConfig(
-    filename="diagnosis_debug.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],  # Log to console instead of a file
 )
 
 # Path to the saved RandomForest model
@@ -51,7 +58,7 @@ def load_model():
         logging.info(f"Model loaded successfully. Features: {feature_names}")
         return model, feature_names
     except FileNotFoundError:
-        logging.error(f"Model file not found: {model_path}")
+        logging.error(f"Model file not found: {MODEL_PATH}")
         return None, []
     except Exception as e:
         logging.error(f"Error loading model: {str(e)}")

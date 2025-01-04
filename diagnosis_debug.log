@@ -84,3 +84,21 @@
 2025-01-04 12:23:47,177 - INFO - Starting Flask app
 2025-01-04 12:23:47,191 - WARNING -  * Debugger is active!
 2025-01-04 12:23:47,197 - INFO -  * Debugger PIN: 115-061-842
+2025-01-04 12:45:01,001 - INFO - Starting Flask app
+2025-01-04 12:45:01,026 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-04 12:45:01,026 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-04 12:45:01,026 - INFO -  * Restarting with stat
+2025-01-04 12:45:01,963 - INFO - Starting Flask app
+2025-01-04 12:45:01,973 - WARNING -  * Debugger is active!
+2025-01-04 12:45:01,977 - INFO -  * Debugger PIN: 115-061-842
+2025-01-04 12:45:09,491 - INFO - 127.0.0.1 - - [04/Jan/2025 12:45:09] "[33mGET / HTTP/1.1[0m" 404 -
+2025-01-04 12:45:12,880 - INFO - Accessed /home route
+2025-01-04 12:45:12,886 - INFO - 127.0.0.1 - - [04/Jan/2025 12:45:12] "GET /home HTTP/1.1" 200 -
+2025-01-04 12:48:55,410 - INFO -  * Detected change in 'C:\\Users\\qiuqi\\Desktop\\predictwell-python-backend\\app.py', reloading
+2025-01-04 12:48:55,513 - INFO -  * Restarting with stat
+2025-01-04 12:48:56,479 - INFO - Starting Flask app
+2025-01-04 12:48:56,479 - WARNING -  * Debugger is active!
+2025-01-04 12:48:56,479 - INFO -  * Debugger PIN: 115-061-842
+2025-01-04 12:50:36,969 - INFO -  * Detected change in 'C:\\Users\\qiuqi\\Desktop\\predictwell-python-backend\\symptom_functions.py', reloading
+2025-01-04 12:50:37,084 - INFO -  * Restarting with stat
