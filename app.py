@@ -7,7 +7,7 @@ from symptom_functions import (
 )  # Import functions from symptom_functions.py
 
 app = Flask(__name__)
-
+# testing
 # Logging setup
 # Commented out to avoid issues in read-only environments
 # log_file = "app.log"  # Log file name
