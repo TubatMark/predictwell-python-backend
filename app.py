@@ -28,6 +28,37 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/preprocess", methods=["POST"])
+def preprocess_route():
+    """
+    Route for preprocessing symptoms without running a diagnosis.
+    """
+    try:
+        # Parse JSON input
+        data = request.json
+        user_input = data.get("message", "")
+
+        if not user_input.strip():
+            error_message = "No symptoms provided."
+            logging.warning(error_message)
+            return jsonify({"error": error_message}), 400
+
+        logging.info(f"Received input for preprocessing: {user_input}")
+
+        # Preprocess symptoms
+        preprocessed_result = preprocess_symptoms(user_input)
+        if "error" in preprocessed_result:
+            logging.error(f"Error during preprocessing: {preprocessed_result}")
+            return jsonify(preprocessed_result), 500
+
+        logging.info(f"Preprocessed symptoms: {preprocessed_result}")
+        return jsonify(preprocessed_result)
+    except Exception as e:
+        error_message = f"An unexpected error occurred: {str(e)}"
+        logging.error(error_message)
+        return jsonify({"error": error_message}), 500
+
+
 @app.route("/process", methods=["POST"])
 def process_symptoms():
     try:
@@ -49,23 +80,29 @@ def process_symptoms():
             return jsonify(preprocessed_result), 500
 
         matched_symptoms = preprocessed_result.get("matched_symptoms", [])
-        response = preprocessed_result
 
-        # Step 2: Diagnose symptoms if any matched
+        # Step 2: Use diagnose_symptoms to process matched symptoms
         if matched_symptoms:
             logging.info(f"Matched symptoms: {matched_symptoms}")
             diagnosis_result = diagnose_symptoms(matched_symptoms)
-            response["prognosis"] = diagnosis_result.get(
-                "prognosis", "No likely diagnosis found."
-            )
-            response["probability"] = diagnosis_result.get("probability", "N/A")
+            response = {
+                "matched_symptoms": matched_symptoms,
+                "prognosis": diagnosis_result.get(
+                    "prognosis", "No likely diagnosis found."
+                ),
+                "probability": diagnosis_result.get("probability", "N/A"),
+            }
         else:
             logging.info("No matching symptoms found.")
-            response["prognosis"] = "No matching symptoms found."
-            response["probability"] = "N/A"
+            response = {
+                "matched_symptoms": [],
+                "prognosis": "No matching symptoms found.",
+                "probability": "N/A",
+            }
 
         logging.info(f"Response sent: {response}")
         return jsonify(response)
+
     except Exception as e:
         error_message = f"An unexpected error occurred: {str(e)}"
         logging.error(error_message)
