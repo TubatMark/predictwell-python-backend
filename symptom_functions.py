@@ -66,10 +66,8 @@ def preprocess_symptoms(user_input):
     if not symptoms_in_file:
         return {"error": "Symptoms file not found or empty."}
 
-    input_symptoms = {
-        symptom.strip().replace("_", " ").lower()
-        for symptom in user_input.replace(",", " ").split()
-    }
+    # User input is assumed to already be normalized with underscores
+    input_symptoms = {symptom.strip().lower() for symptom in user_input.split(",")}
     matched_symptoms = [
         symptom for symptom in input_symptoms if symptom in symptoms_in_file
     ]
